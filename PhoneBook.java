@@ -34,10 +34,9 @@ public class PhoneBook {
                     System.exit(0);
             }
         }
-
     }
 
-    public void addPerson(){
+    public void addPerson() {
         Person person = new Person();
         System.out.println("Enter the name of the person:");
         person.setName(scanner.next());
@@ -52,14 +51,15 @@ public class PhoneBook {
     }
 
     public void countPerson() {
-        System.out.println("The Phone Book has "+ storage.size() + " records.");
+        System.out.println("The Phone Book has " + storage.size() + " records.");
     }
 
     public void listPerson() {
-        for (Person each : storage) {
-            System.out.println(each.getName() + " " + each.getSurname() + " "
-            + each.getPhone());
+        for (int i = 0; i < storage.size(); i++) {
+            System.out.println((i + 1) + ". "
+                    + storage.get(i).getName() + " "
+                    + storage.get(i).getSurname() + " "
+                    + storage.get(i).getPhone());
         }
-
     }
 }
