@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class PhoneBook {
-    Person person = new Person();
+
     List<Person> storage = new ArrayList<>();
     Scanner scanner = new Scanner(System.in);
 
@@ -28,7 +28,7 @@ public class PhoneBook {
                     countPerson();
                     break;
                 case ("list"):
-                    //do list
+                    listPerson();
                     break;
                 case ("exit"):
                     System.exit(0);
@@ -38,7 +38,7 @@ public class PhoneBook {
     }
 
     public void addPerson(){
-
+        Person person = new Person();
         System.out.println("Enter the name of the person:");
         person.setName(scanner.next());
         System.out.println("Enter the surname of the person:");
@@ -53,5 +53,13 @@ public class PhoneBook {
 
     public void countPerson() {
         System.out.println("The Phone Book has "+ storage.size() + " records.");
+    }
+
+    public void listPerson() {
+        for (Person each : storage) {
+            System.out.println(each.getName() + " " + each.getSurname() + " "
+            + each.getPhone());
+        }
+
     }
 }
