@@ -58,13 +58,8 @@ public class PhoneBook {
     }
 
     private boolean checkNumber(String number) {
-        //^\+?[\d]\s[-\(]?\d{3}\)?[\s-]{1}\d{3}[\s-]{1}\d{3}[\s-]{1}[0-9a-zA-Z]{4}$
-        //^[(]?\d{3}\)?[\s-]{1}\d{3}[\s-]{1}\d{3}[\s-]{1}[0-9a-zA-Z]{3,4}$
-        //^\(?\d{2,}\)?[\s-]?([\(\)(0-9a-zA-Z]{2,})?[\s-]?([0-9a-zA-Z]{2,})?[\s-]?([0-9a-zA-Z]{2,})?$
-        final String regex1 = "^\\+?[\\d]\\s[-(]?\\d{3}\\)?[\\s-]\\d{3}[\\s-]\\d{3}[\\s-][0-9a-zA-Z]{4}$";
-        final String regex2 = "^[(]?\\d{3}\\)?[\\s-]\\d{3}[\\s-]\\d{3}[\\s-][0-9a-zA-Z]{3,4}$";
-        final String regex3 = "^\\(?\\d{2,}\\)?[\\s-]?([()0-9a-zA-Z]{2,})?[\\s-]?([0-9a-zA-Z]{2,})?[\\s-]?([0-9a-zA-Z]{2,})?$";
-        return number.matches(regex1) || number.matches(regex2) || number.matches(regex3);
+        final String regex = "^\\+?([\\da-zA-Z]+[\\s-]?)?(\\([\\da-zA-Z]{2,}(\\)[\\s-]|\\)$))?([\\da-zA-Z]{2,}[\\s-]?)*([\\da-zA-Z]{2,})?$";
+        return number.matches(regex);
     }
 
     public void countPerson() {
