@@ -60,10 +60,11 @@ public class PhoneBook {
     private boolean checkNumber(String number) {
         //^\+?[\d]\s[-\(]?\d{3}\)?[\s-]{1}\d{3}[\s-]{1}\d{3}[\s-]{1}[0-9a-zA-Z]{4}$
         //^[(]?\d{3}\)?[\s-]{1}\d{3}[\s-]{1}\d{3}[\s-]{1}[0-9a-zA-Z]{3,4}$
-
+        //^\(?\d{2,}\)?[\s-]?([\(\)(0-9a-zA-Z]{2,})?[\s-]?([0-9a-zA-Z]{2,})?[\s-]?([0-9a-zA-Z]{2,})?$
         final String regex1 = "^\\+?[\\d]\\s[-(]?\\d{3}\\)?[\\s-]\\d{3}[\\s-]\\d{3}[\\s-][0-9a-zA-Z]{4}$";
         final String regex2 = "^[(]?\\d{3}\\)?[\\s-]\\d{3}[\\s-]\\d{3}[\\s-][0-9a-zA-Z]{3,4}$";
-        return number.matches(regex1) || number.matches(regex2);
+        final String regex3 = "^\\(?\\d{2,}\\)?[\\s-]?([()0-9a-zA-Z]{2,})?[\\s-]?([0-9a-zA-Z]{2,})?[\\s-]?([0-9a-zA-Z]{2,})?$";
+        return number.matches(regex1) || number.matches(regex2) || number.matches(regex3);
     }
 
     public void countPerson() {
@@ -95,14 +96,18 @@ public class PhoneBook {
     }
 
     public void editPerson() {
+        if (storage.size() == 0) {
+            System.out.println("No records to edit!");
+            return;
+        }
         System.out.print("Select a record: ");
-        int record = scanner.nextInt();
+        int record = Integer.parseInt(scanner.nextLine());
         if (record > storage.size()) {
             System.out.println("ERROR! record has bigeer!");
             return;
         }
         System.out.print("Select a field (name, surname, number): ");
-        scanner.nextLine();
+//        scanner.nextLine();
         String field = scanner.nextLine();
         switch (field) {
             case ("name") :
