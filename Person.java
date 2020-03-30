@@ -1,7 +1,5 @@
 package contacts;
 
-import java.time.LocalDate;
-
 public class Person extends Element {
     private String name;
     private String surname;

@@ -4,7 +4,6 @@ public class Company extends Element {
     private String brand;
     private String address;
 
-
     public String getBrand() {
         return brand;
     }

@@ -1,8 +1,5 @@
 package contacts;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 public class Element {
     private String phone;
     private boolean isPerson;
