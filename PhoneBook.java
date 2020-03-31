@@ -53,74 +53,73 @@ public class PhoneBook {
     }
 
     public void addPerson() {
-        Element person = new Person();
-        person.setPerson(true);
 
         System.out.print("Enter the name: ");
-        ((Person) person).setName(scanner.nextLine());
+        String name = scanner.nextLine();
         System.out.print("Enter the surname: ");
-        ((Person) person).setSurname(scanner.nextLine());
+        String surname = scanner.nextLine();
         System.out.print("Enter the birth date: ");
-        String birthDay = scanner.nextLine();
+        String inputDay = scanner.nextLine();
+        String birthDay = "[no data]";
         try {
-            ((Person) person).setBirthDay(String.valueOf(LocalDate.parse(birthDay)));
+            birthDay = String.valueOf(LocalDate.parse(inputDay));
         } catch (Exception e) {
             System.out.println("Bad birth date!");
-            ((Person) person).setBirthDay("[no data]");
         }
         System.out.print("Enter the gender (M, F): ");
         String gender = scanner.nextLine();
-        if (gender.equals("M") || gender.equals("F")) {
-            ((Person) person).setGender(gender);
-        } else {
-            System.out.println("Bad gender!");
-            ((Person) person).setGender("[no data]");
-        }
+        gender = checkGender(gender);
         System.out.print("Enter the number: ");
-        String number = scanner.nextLine();
-        if (checkNumber(number)) {
-            person.setPhone(number);
-        } else {
+        String phone = scanner.nextLine();
+        if (wrongNumber(phone)) {
             System.out.println("Wrong number format!");
-            person.setPhone("[no number]");
+            phone = "[no number]";
         }
 
-        person.setCreationDate(String.valueOf(LocalDateTime.now()));
-        person.setLastEditDate(String.valueOf(LocalDateTime.now()));
+        String creationDate= String.valueOf(LocalDateTime.now());
+        String lastEditDate = String.valueOf(LocalDateTime.now());
 
-        storage.add(person);
+        Element element = new Person(name, surname, birthDay, gender, phone, creationDate, lastEditDate);
+        storage.add(element);
+
         System.out.println("A record added!");
         System.out.println();
     }
 
     public void addCompany() {
-        Element company = new Company();
-        company.setPerson(false);
-
         System.out.print("Enter the organization name: ");
-        ((Company) company).setBrand(scanner.nextLine());
+        String brand = scanner.nextLine();
         System.out.print("Enter the address: ");
-        ((Company) company).setAddress(scanner.nextLine());
+        String address = scanner.nextLine();
         System.out.print("Enter the number: ");
-        String number = scanner.nextLine();
-        if (checkNumber(number)) {
-            company.setPhone(number);
-        } else {
+        String phone = scanner.nextLine();
+        if (wrongNumber(phone)) {
             System.out.println("Wrong number format!");
-            company.setPhone("[no number]");
+            phone = "[no number]";
         }
 
-        company.setCreationDate(String.valueOf(LocalDateTime.now()));
-        company.setLastEditDate(String.valueOf(LocalDateTime.now()));
+        String creationDate= String.valueOf(LocalDateTime.now());
+        String lastEditDate = String.valueOf(LocalDateTime.now());
 
-        storage.add(company);
+        Element element = new Company(brand, address, phone, creationDate,lastEditDate);
+        storage.add(element);
+
         System.out.println("A record added!");
         System.out.println();
     }
 
-    private boolean checkNumber(String number) {
+    protected boolean wrongNumber(String phone){
         final String regex = "^\\+?([\\da-zA-Z]+[\\s-]?)?(\\([\\da-zA-Z]{2,}(\\)[\\s-]|\\)$))?([\\da-zA-Z]{2,}[\\s-]?)*([\\da-zA-Z]{2,})?$";
-        return number.matches(regex);
+        return !phone.matches(regex);
+    }
+
+    private String checkGender(String gender) {
+        if (!gender.equals("M") && !gender.equals("F")) {
+            System.out.println("Bad gender!");
+            return "[no data]";
+        } else {
+            return gender;
+        }
     }
 
     public void countElements() {
@@ -131,10 +130,10 @@ public class PhoneBook {
     public void listOfElements() {
         String output;
         for (int i = 0; i < storage.size(); i++) {
-            if (storage.get(i).isPerson()) {
-                output = ((Person) storage.get(i)).getName() + " " + ((Person) storage.get(i)).getSurname();
+            if (storage.get(i).getClass() == Person.class) {
+                output = storage.get(i).getField("name") + " " + storage.get(i).getField("surname");
             } else {
-                output = ((Company) storage.get(i)).getBrand();
+                output = storage.get(i).getField("name");
             }
             System.out.println((i + 1) + ". " + output);
         }
@@ -147,21 +146,8 @@ public class PhoneBook {
         String selectedRecord = scanner.nextLine();
         int i = Integer.parseInt(selectedRecord) - 1;
 
-        if (storage.get(i).isPerson()) {
-            System.out.println("Name: " + ((Person) storage.get(i)).getName());
-            System.out.println("Surname: " + ((Person) storage.get(i)).getSurname());
-            System.out.println("Birth date: " + ((Person) storage.get(i)).getBirthDay());
-            System.out.println("Gender: " + ((Person) storage.get(i)).getGender());
-            System.out.println("Number: " + storage.get(i).getPhone());
-            System.out.println("Time created: " + storage.get(i).getCreationDate().substring(0, 16));
-            System.out.println("Time last edit: " + storage.get(i).getLastEditDate().substring(0, 16));
-        } else {
-            System.out.println("Organization name: " + ((Company) storage.get(i)).getBrand());
-            System.out.println("Address: " + ((Company) storage.get(i)).getAddress());
-            System.out.println("Number: " + storage.get(i).getPhone());
-            System.out.println("Time created: " + storage.get(i).getCreationDate().substring(0, 16));
-            System.out.println("Time last edit: " + storage.get(i).getLastEditDate().substring(0, 16));
-        }
+        storage.get(i).getAllFields();
+
         System.out.println();
     }
 
@@ -198,7 +184,7 @@ public class PhoneBook {
         String selectedRecord = scanner.nextLine();
         int i = Integer.parseInt(selectedRecord) - 1;
 
-        if (storage.get(i).isPerson()) {
+        if (storage.get(i).getClass()== Person.class) {
             System.out.print("Select a field (name, surname, number): ");
             String field = scanner.nextLine();
             switch (field) {
@@ -233,12 +219,7 @@ public class PhoneBook {
                 case ("number"):
                     System.out.print("Enter number: ");
                     String number = scanner.nextLine();
-                    if (checkNumber(number)) {
-                        storage.get(i).setPhone(number);
-                    } else {
-                        System.out.println("Wrong number format!");
-                        storage.get(i).setPhone("[no number]");
-                    }
+
                     break;
             }
         } else {
@@ -256,12 +237,7 @@ public class PhoneBook {
                 case ("number"):
                     System.out.print("Enter number: ");
                     String number = scanner.nextLine();
-                    if (checkNumber(number)) {
-                        storage.get(i).setPhone(number);
-                    } else {
-                        System.out.println("Wrong number format!");
-                        storage.get(i).setPhone("[no number]");
-                    }
+
                     break;
             }
         }
