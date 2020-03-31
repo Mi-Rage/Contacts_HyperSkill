@@ -1,6 +1,7 @@
 package contacts;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public class Company extends Element {
     private String brand;
@@ -19,6 +20,17 @@ public class Company extends Element {
         System.out.println("Number: " + this.getPhone());
         System.out.println("Time created: " + this.getCreationDate().substring(0, 16));
         System.out.println("Time last edit: " + this.getLastEditDate().substring(0, 16));
+    }
+
+    @Override
+    public ArrayList<String> getAllItemField() {
+        ArrayList<String> items = new ArrayList<>();
+        items.add(this.getBrand());
+        items.add(this.getAddress());
+        items.add(this.getPhone());
+        items.add(this.getCreationDate().substring(0, 16));
+        items.add(this.getLastEditDate().substring(0, 16));
+        return items;
     }
 
     @Override

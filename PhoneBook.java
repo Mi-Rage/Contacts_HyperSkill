@@ -2,9 +2,7 @@ package contacts;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 
 public class PhoneBook {
@@ -15,24 +13,39 @@ public class PhoneBook {
     public void init() {
 
         while (true) {
-            System.out.print("Enter action (add, remove, edit, count, info, exit): ");
+            System.out.print("[menu] Enter action (add, list, search, count, exit): ");
             String choice = scanner.nextLine();
             switch (choice) {
                 case ("add"):
                     addElement();
                     break;
-                case ("remove"):
-                    removeElements();
+                case ("list"):
+                    listOfElements();
+                    while (true){
+                        System.out.print("[list] Enter action ([number], back): ");
+                        choice = scanner.nextLine();
+                        if (choice.equals("back")) {
+                            break;
+                        } else {
+                            storage.get(Integer.parseInt(choice) - 1).getAllFields();
+                        }
+                    }
                     break;
+                case("search"):
+                    searchElement();
+                    break;
+//                case ("remove"):
+//                    removeElements();
+//                    break;
                 case ("edit"):
                     editElements();
                     break;
                 case ("count"):
                     countElements();
                     break;
-                case ("info"):
-                    infoElements();
-                    break;
+//                case ("info"):
+//                    infoElements();
+//                    break;
                 case ("exit"):
                     System.exit(0);
             }
@@ -53,7 +66,6 @@ public class PhoneBook {
     }
 
     public void addPerson() {
-
         System.out.print("Enter the name: ");
         String name = scanner.nextLine();
         System.out.print("Enter the surname: ");
@@ -136,6 +148,32 @@ public class PhoneBook {
                 output = storage.get(i).getField("name");
             }
             System.out.println((i + 1) + ". " + output);
+        }
+    }
+
+    public void searchElement(){
+        HashMap<Integer, String> resultSearch = new HashMap<>();
+
+        System.out.print("Enter search query: ");
+        String output;
+        String query = scanner.nextLine();
+        for (int i = 0; i < storage.size(); i++) {
+            for(String each : storage.get(i).getAllItemField()) {
+                if (each.toLowerCase().matches("(.*)" + query + "(.*)")) {
+                    if (storage.get(i).getClass() == Person.class) {
+                        output = storage.get(i).getField("name") + " " + storage.get(i).getField("surname");
+                    } else {
+                        output = storage.get(i).getField("name");
+                    }
+                    resultSearch.put(i, output);
+                    break;
+                }
+            }
+
+        }
+        System.out.printf("Found %d results:\n", resultSearch.size());
+        for(int i = 0; i < resultSearch.size(); i++){
+            System.out.println((i + 1) + ". " + resultSearch.get(i));
         }
     }
 

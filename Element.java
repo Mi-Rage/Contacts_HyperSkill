@@ -1,5 +1,7 @@
 package contacts;
 
+import java.util.ArrayList;
+
 public abstract class Element {
     private String phone;
     private String creationDate;
@@ -12,6 +14,10 @@ public abstract class Element {
     }
 
     public void getAllFields(){
+    }
+
+    public ArrayList<String> getAllItemField(){
+        return null;
     }
 
     public void changeField(String field, String volume){

@@ -1,6 +1,7 @@
 package contacts;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public class Person extends Element {
     private String name;
@@ -28,6 +29,18 @@ public class Person extends Element {
         System.out.println("Time last edit: " + this.getLastEditDate().substring(0, 16));
     }
 
+    @Override
+    public ArrayList<String> getAllItemField() {
+        ArrayList<String> items = new ArrayList<>();
+        items.add(this.getName());
+        items.add(this.getSurname());
+        items.add(this.getBirthDay());
+        items.add(this.getGender());
+        items.add(this.getPhone());
+        items.add(this.getCreationDate().substring(0, 16));
+        items.add(this.getLastEditDate().substring(0, 16));
+        return items;
+    }
 
     @Override
     public void changeField(String field, String volume) {
