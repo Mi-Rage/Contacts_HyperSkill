@@ -9,12 +9,13 @@ public class PhoneBook {
 
     List<Element> storage = new ArrayList<>();
     Scanner scanner = new Scanner(System.in);
+    String choice = "";
 
     public void init() {
 
         while (true) {
             System.out.print("[menu] Enter action (add, list, search, count, exit): ");
-            String choice = scanner.nextLine();
+            choice = scanner.nextLine();
             switch (choice) {
                 case ("add"):
                     addElement();
@@ -22,30 +23,46 @@ public class PhoneBook {
                 case ("list"):
                     listOfElements();
                     while (true){
+                        if (choice.equals("menu")) {
+                            break;
+                        }
                         System.out.print("[list] Enter action ([number], back): ");
                         choice = scanner.nextLine();
                         if (choice.equals("back")) {
                             break;
                         } else {
-                            storage.get(Integer.parseInt(choice) - 1).getAllFields();
+                            int number = Integer.parseInt(choice) - 1;
+                            storage.get(number).getAllFields();
+                            System.out.println();
+                            while (!choice.equals("menu")) {
+                                System.out.print("[record] Enter action (edit, delete, menu): ");
+                                choice = scanner.nextLine();
+                                switch (choice) {
+                                    case ("edit") :
+                                        editElements(storage.get(number));
+                                        break;
+                                    case ("delete") :
+                                        removeElements(number);
+                                        choice = "menu";
+                                        break;
+                                    case ("menu") :
+                                        System.out.println();
+                                        break;
+                                }
+                            }
                         }
+
                     }
                     break;
                 case("search"):
                     searchElement();
                     break;
-//                case ("remove"):
-//                    removeElements();
-//                    break;
                 case ("edit"):
-                    editElements();
+                    //editElements();
                     break;
                 case ("count"):
                     countElements();
                     break;
-//                case ("info"):
-//                    infoElements();
-//                    break;
                 case ("exit"):
                     System.exit(0);
             }
@@ -140,6 +157,12 @@ public class PhoneBook {
     }
 
     public void listOfElements() {
+        if (storage.size() == 0) {
+            System.out.println("We have no elements");
+            System.out.println();
+            choice = "menu";
+            return;
+        }
         String output;
         for (int i = 0; i < storage.size(); i++) {
             if (storage.get(i).getClass() == Person.class) {
@@ -149,9 +172,11 @@ public class PhoneBook {
             }
             System.out.println((i + 1) + ". " + output);
         }
+        System.out.println();
     }
 
     public void searchElement(){
+        ArrayList<Integer> keyListSearch = new ArrayList<>();
         HashMap<Integer, String> resultSearch = new HashMap<>();
 
         System.out.print("Enter search query: ");
@@ -165,16 +190,19 @@ public class PhoneBook {
                     } else {
                         output = storage.get(i).getField("name");
                     }
-                    resultSearch.put(i, output);
+                    resultSearch.put(i,output);
+                    keyListSearch.add(i);
+                    //resultSearch.add(output);
                     break;
                 }
             }
 
         }
         System.out.printf("Found %d results:\n", resultSearch.size());
-        for(int i = 0; i < resultSearch.size(); i++){
-            System.out.println((i + 1) + ". " + resultSearch.get(i));
+        for(int i = 0; i < keyListSearch.size(); i++){
+            System.out.println((i + 1) + ". " + resultSearch.get(keyListSearch.get(i)));
         }
+        System.out.println();
     }
 
     public void infoElements() {
@@ -189,74 +217,70 @@ public class PhoneBook {
         System.out.println();
     }
 
-    public void removeElements() {
+    public void removeElements(int number) {
+//
+//        if (storage.size() == 0) {
+//            System.out.println("No records to remove!");
+//            return;
+//        }
+//
+//        listOfElements();
+//
+//        System.out.print("Select a record: ");
+//        int selectRec = scanner.nextInt();
+//        if (selectRec > storage.size()) {
+//            System.out.println("ERROR! Select record biggest then capacity");
+//            return;
+//        }
 
-        if (storage.size() == 0) {
-            System.out.println("No records to remove!");
-            return;
-        }
-
-        listOfElements();
-
-        System.out.print("Select a record: ");
-        int selectRec = scanner.nextInt();
-        if (selectRec > storage.size()) {
-            System.out.println("ERROR! Select record biggest then capacity");
-            return;
-        }
-
-        storage.remove(selectRec - 1);
+        storage.remove(number);
         System.out.println("The record removed!");
         System.out.println();
     }
 
-    public void editElements() {
-        if (storage.size() == 0) {
-            System.out.println("No records to edit!");
-            return;
-        }
+    public void editElements(Element element) {
 
-        listOfElements();
-
-        System.out.print("Select a record: ");
-        String selectedRecord = scanner.nextLine();
-        int i = Integer.parseInt(selectedRecord) - 1;
-
-        if (storage.get(i).getClass()== Person.class) {
+        if (element.getClass() == Person.class) {
             System.out.print("Select a field (name, surname, number): ");
             String field = scanner.nextLine();
             switch (field) {
                 case ("name"):
                     System.out.print("Enter name: ");
-                    ((Person) storage.get(i)).setName(scanner.nextLine());
+                    ((Person) element).setName(scanner.nextLine());
                     break;
                 case ("surname"):
                     System.out.print("Enter surname: ");
-                    ((Person) storage.get(i)).setSurname(scanner.nextLine());
+                    ((Person) element).setSurname(scanner.nextLine());
                     break;
                 case ("birth"):
                     System.out.print("Enter birth: ");
                     String birthDay = scanner.nextLine();
                     try {
-                        ((Person) storage.get(i)).setBirthDay(String.valueOf(LocalDate.parse(birthDay)));
+                        ((Person) element).setBirthDay(String.valueOf(LocalDate.parse(birthDay)));
                     } catch (Exception e) {
                         System.out.println("Bad birth date!");
-                        ((Person) storage.get(i)).setBirthDay("[no data]");
+                        ((Person) element).setBirthDay("[no data]");
                     }
                     break;
                 case ("gender"):
                     System.out.print("Enter gender: ");
                     String gender = scanner.nextLine();
                     if (gender.equals("M") || gender.equals("F")) {
-                        ((Person) storage.get(i)).setGender(gender);
+                        ((Person) element).setGender(gender);
                     } else {
                         System.out.println("Bad gender!");
-                        ((Person) storage.get(i)).setGender("[no data]");
+                        ((Person) element).setGender("[no data]");
                     }
                     break;
                 case ("number"):
                     System.out.print("Enter number: ");
                     String number = scanner.nextLine();
+                    if (wrongNumber(number)) {
+                        System.out.println("Wrong number format!");
+                        element.setPhone("[no number]");
+                    } else {
+                        element.setPhone(number);
+                    }
 
                     break;
             }
@@ -266,21 +290,27 @@ public class PhoneBook {
             switch (field) {
                 case ("name"):
                     System.out.print("Enter the organization name: ");
-                    ((Company) storage.get(i)).setBrand(scanner.nextLine());
+                    ((Company) element).setBrand(scanner.nextLine());
                     break;
                 case ("address"):
                     System.out.print("Enter the address: ");
-                    ((Company) storage.get(i)).setAddress(scanner.nextLine());
+                    ((Company) element).setAddress(scanner.nextLine());
                     break;
                 case ("number"):
                     System.out.print("Enter number: ");
-                    String number = scanner.nextLine();
-
+                    String phone = scanner.nextLine();
+                    if (wrongNumber(phone)) {
+                        System.out.println("Wrong number format!");
+                        element.setPhone("[no number]");
+                    } else {
+                        element.setPhone(phone);
+                    }
                     break;
             }
         }
-        storage.get(i).setLastEditDate(String.valueOf(LocalDateTime.now()));
-        System.out.println("The record updated!");
+        element.setLastEditDate(String.valueOf(LocalDateTime.now()));
+        System.out.println("Saved");
+        element.getAllFields();
         System.out.println();
     }
 }

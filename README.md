@@ -1,2 +1,2 @@
 # Contacts_HyperSkill
-Working on Stage 4/4.
+Complete work on project. Stage 3/4.
